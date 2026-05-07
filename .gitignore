@@ -33,3 +33,5 @@ coverage/
 .claude/
 .claude-audit.md
 .claude-code.log
+
+CLAUDE.md
