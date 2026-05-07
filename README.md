@@ -21,8 +21,8 @@ Simply open `index.html` in your browser:
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/synth-district-terminal.git
-cd synth-district-terminal
+git clone https://github.com/rehatiel/terminal-site.git
+cd terminal-site
 
 # Open in browser (no build step needed!)
 open index.html  # macOS

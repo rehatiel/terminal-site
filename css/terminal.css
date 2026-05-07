@@ -1,0 +1,473 @@
+/* =========================================================
+   Synth District — Terminal Emulator CSS
+   ========================================================= */
+
+:root {
+    --bg:           #0d0d0d;
+    --fg:           #c5c8c6;
+    --cursor-bg:    #c5c8c6;
+    --selection-bg: #373b41;
+
+    --black:        #1d1f21;
+    --bright-black: #666666;
+    --red:          #cc6666;
+    --bright-red:   #ff4444;
+    --green:        #b5bd68;
+    --bright-green: #d0e06a;
+    --yellow:       #f0c674;
+    --bright-yellow:#ffd080;
+    --blue:         #81a2be;
+    --bright-blue:  #a8c0d6;
+    --magenta:      #b294bb;
+    --bright-magenta:#d0a8d8;
+    --cyan:         #8abeb7;
+    --bright-cyan:  #a8d8d0;
+    --white:        #c5c8c6;
+    --bright-white: #e8e8e8;
+
+    --glow-color: rgba(181, 189, 104, 0.12);
+    --font: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Source Code Pro', 'Courier New', monospace;
+    --font-size: 14px;
+    --line-height: 1.4;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    overflow: hidden;
+}
+
+/* ── Layout ── */
+
+#terminal-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    padding: 8px 12px;
+    cursor: text;
+    position: relative;
+}
+
+#terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+#output-spacer {
+    flex: 1;
+}
+
+/* Custom scrollbar */
+#terminal-output::-webkit-scrollbar { width: 6px; }
+#terminal-output::-webkit-scrollbar-track { background: transparent; }
+#terminal-output::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+#terminal-output::-webkit-scrollbar-thumb:hover { background: #555; }
+
+#input-line {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+#prompt-text {
+    flex-shrink: 0;
+    white-space: pre;
+}
+
+#input-display {
+    flex: 1;
+    min-width: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Hidden real input — captures keyboard events */
+#hidden-input {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    border: none;
+    outline: none;
+    pointer-events: none;
+}
+
+/* ── Output lines ── */
+
+.line {
+    display: block;
+    min-height: calc(var(--font-size) * var(--line-height));
+}
+
+.line-error { color: var(--red); }
+.line-success { color: var(--green); }
+.line-info { color: var(--cyan); }
+
+/* ── Cursor ── */
+
+#cursor {
+    display: inline-block;
+    background: var(--cursor-bg);
+    color: var(--bg);
+    min-width: 0.6em;
+    animation: blink 1.06s step-start infinite;
+    vertical-align: baseline;
+}
+
+@keyframes blink {
+    0%, 49%  { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+body.typing #cursor {
+    animation: none;
+    opacity: 1;
+}
+
+/* ── ANSI Color Classes ── */
+
+.ansi-bold        { font-weight: 700; }
+.ansi-dim         { opacity: 0.6; }
+.ansi-italic      { font-style: italic; }
+.ansi-underline   { text-decoration: underline; }
+
+.ansi-fg-black    { color: var(--bright-black); }
+.ansi-fg-red      { color: var(--red); }
+.ansi-fg-green    { color: var(--green); }
+.ansi-fg-yellow   { color: var(--yellow); }
+.ansi-fg-blue     { color: var(--blue); }
+.ansi-fg-magenta  { color: var(--magenta); }
+.ansi-fg-cyan     { color: var(--cyan); }
+.ansi-fg-white    { color: var(--bright-white); }
+
+.ansi-fg-bright-black   { color: var(--bright-black); }
+.ansi-fg-bright-red     { color: var(--bright-red); }
+.ansi-fg-bright-green   { color: var(--bright-green); }
+.ansi-fg-bright-yellow  { color: var(--bright-yellow); }
+.ansi-fg-bright-blue    { color: var(--bright-blue); }
+.ansi-fg-bright-magenta { color: var(--bright-magenta); }
+.ansi-fg-bright-cyan    { color: var(--bright-cyan); }
+.ansi-fg-bright-white   { color: var(--bright-white); }
+
+.ansi-bg-black   { background-color: var(--black); }
+.ansi-bg-red     { background-color: var(--red); }
+.ansi-bg-green   { background-color: var(--green); }
+.ansi-bg-yellow  { background-color: var(--yellow); }
+.ansi-bg-blue    { background-color: var(--blue); }
+.ansi-bg-magenta { background-color: var(--magenta); }
+.ansi-bg-cyan    { background-color: var(--cyan); }
+.ansi-bg-white   { background-color: var(--white); }
+
+/* ── CRT Effect ── */
+
+body.crt-on {
+    text-shadow:
+        0 0 8px var(--glow-color),
+        0 0 2px var(--glow-color);
+}
+
+body.crt-on #terminal-container::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.06) 2px,
+        rgba(0, 0, 0, 0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* ── Overlays (top, vim, nano, pager) ── */
+
+.term-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 200;
+    font-family: var(--font);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    color: var(--fg);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.term-overlay-header {
+    background: var(--selection-bg);
+    color: var(--bright-white);
+    padding: 2px 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.term-overlay-body {
+    flex: 1;
+    overflow: auto;
+    padding: 8px 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.term-overlay-footer {
+    background: var(--selection-bg);
+    color: var(--bright-white);
+    padding: 2px 12px;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+/* ── top command ── */
+
+#top-overlay {
+    padding: 8px 12px;
+    overflow: hidden;
+}
+
+#top-overlay .top-header {
+    color: var(--bright-white);
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+#top-overlay .top-th {
+    color: var(--bg);
+    background: var(--blue);
+    font-weight: bold;
+    padding: 0 2px;
+}
+
+#top-overlay .cpu-bar {
+    display: inline-block;
+    height: 1em;
+    background: var(--green);
+    vertical-align: middle;
+}
+
+/* ── vim overlay ── */
+
+#vim-overlay .vim-content {
+    flex: 1;
+    overflow: hidden;
+    padding: 0;
+}
+
+#vim-overlay .vim-line {
+    display: block;
+    padding: 0 12px;
+    min-height: calc(var(--font-size) * var(--line-height));
+    white-space: pre;
+}
+
+#vim-overlay .vim-line.vim-cursor-line {
+    background: var(--selection-bg);
+}
+
+#vim-overlay .vim-tildes {
+    color: var(--bright-blue);
+}
+
+#vim-overlay .vim-statusbar {
+    background: var(--selection-bg);
+    color: var(--bright-white);
+    padding: 2px 12px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+#vim-overlay .vim-mode {
+    color: var(--bright-green);
+    font-weight: bold;
+}
+
+#vim-overlay .vim-cmdline {
+    padding: 2px 12px;
+    flex-shrink: 0;
+    background: var(--bg);
+    min-height: 1.4em;
+}
+
+#vim-overlay .vim-gutter {
+    color: var(--bright-black);
+    padding-right: 8px;
+    user-select: none;
+    text-align: right;
+    min-width: 4ch;
+    display: inline-block;
+}
+
+#vim-overlay .vim-visual {
+    background: #4455aa;
+    color: var(--bright-white);
+}
+
+#vim-overlay .vim-search-match {
+    background: #aa6600;
+    color: var(--bright-white);
+}
+
+#vim-overlay .vim-statusbar .vim-dirty {
+    color: var(--bright-red);
+    margin-left: 4px;
+}
+
+#vim-overlay .vim-search-mode {
+    color: var(--bright-yellow);
+}
+
+/* ── nano overlay ── */
+
+#nano-overlay .nano-header {
+    background: var(--selection-bg);
+    text-align: center;
+    padding: 2px;
+}
+
+#nano-overlay .nano-textarea {
+    flex: 1;
+    background: var(--bg);
+    color: var(--fg);
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--font);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    padding: 4px 12px;
+    white-space: pre;
+    overflow: auto;
+}
+
+#nano-overlay .nano-footer {
+    background: var(--selection-bg);
+    padding: 0 2px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    font-size: 12px;
+}
+
+#nano-overlay .nano-key {
+    color: var(--bg);
+    background: var(--fg);
+    padding: 0 3px;
+}
+
+/* ── Pager overlay ── */
+
+#pager-overlay .pager-body {
+    white-space: pre;
+    overflow: auto;
+}
+
+/* ── Matrix canvas ── */
+
+#matrix-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    cursor: pointer;
+}
+
+/* ── SL overlay ── */
+
+#sl-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+    overflow: hidden;
+    background: transparent;
+}
+
+#sl-overlay pre {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    color: var(--yellow);
+    font-family: var(--font);
+    font-size: var(--font-size);
+    line-height: 1.2;
+    white-space: pre;
+}
+
+/* ── Boot / BIOS overlay ── */
+
+#boot-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 1000;
+    font-family: var(--font);
+    font-size: var(--font-size);
+    color: var(--fg);
+    padding: 8px 12px;
+    overflow: hidden;
+    white-space: pre-wrap;
+}
+
+#bios-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000080;
+    z-index: 1000;
+    font-family: var(--font);
+    font-size: var(--font-size);
+    color: #aaaaaa;
+    padding: 40px 60px;
+    white-space: pre-wrap;
+}
+
+/* ── Konami rainbow ── */
+
+@keyframes rainbow {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+#terminal-container.konami {
+    animation: rainbow 0.4s linear infinite;
+}
+
+/* ── ls color classes ── */
+
+.ls-dir     { color: var(--blue); font-weight: bold; }
+.ls-exec    { color: var(--green); font-weight: bold; }
+.ls-symlink { color: var(--cyan); }
+.ls-hidden  { color: var(--bright-black); }
+.ls-archive { color: var(--red); }
+
+/* ── grep match highlight ── */
+
+.grep-match { color: var(--red); font-weight: bold; }
+
+/* ── man page ── */
+
+.man-section { color: var(--bright-white); font-weight: bold; }
+.man-indent  { padding-left: 2em; display: block; }
