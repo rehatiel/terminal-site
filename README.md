@@ -1,6 +1,6 @@
 # Synth District Terminal
 
-A static, zero-dependency Linux terminal emulator for the Synth District. Pure vanilla HTML/CSS/JavaScript — no build step, no package manager, no framework. Open `index.html` directly in your browser to run.
+A static, zero-dependency Linux terminal emulator for the Synth District. Pure vanilla HTML/CSS/JavaScript — no build step, no package manager, no framework. Run with Docker for the best experience.
 
 ## Features
 
@@ -17,22 +17,20 @@ A static, zero-dependency Linux terminal emulator for the Synth District. Pure v
 
 ## Getting Started
 
-Simply open `index.html` in your browser:
+Clone the repo and run with Docker:
 
 ```bash
 # Clone the repo
 git clone https://github.com/rehatiel/terminal-site.git
 cd terminal-site
 
-# Open in browser (no build step needed!)
-open index.html  # macOS
-# or
-xdg-open index.html  # Linux
-# or
-start index.html  # Windows
+# Start the Docker container
+docker-compose up
+
+# Visit http://localhost:8080 in your browser
 ```
 
-No installation, no dependencies, no build step. That's it.
+That's it! Docker handles all the setup and serving.
 
 ## Usage
 
