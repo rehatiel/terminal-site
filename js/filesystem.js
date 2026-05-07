@@ -143,22 +143,25 @@ Last updated: $(date +%Y-%m-%d)
     const ARCHIVE_TGZ_CONTENT = `Cannot display binary file: archive.tar.gz
 `;
 
-    const OS_RELEASE = `NAME="Synth District Linux"
-VERSION="1.0 (Neon)"
-ID=synthdistrict
+    const OS_RELEASE = () => {
+        const cfg = SD.config;
+        return `NAME="${cfg.osName}"
+VERSION="${cfg.osVersion} (${cfg.osCodename})"
+ID=${cfg.kernelName}
 ID_LIKE=debian
-PRETTY_NAME="Synth District Linux 1.0 (Neon)"
-VERSION_ID="1.0"
-HOME_URL="https://synthdistrict.dev"
-SUPPORT_URL="https://synthdistrict.dev/support"
-BUG_REPORT_URL="https://synthdistrict.dev/bugs"
-VERSION_CODENAME=neon
-UBUNTU_CODENAME=neon
+PRETTY_NAME="${cfg.getOsPrettyName()}"
+VERSION_ID="${cfg.osVersion}"
+HOME_URL="${cfg.siteUrl}"
+SUPPORT_URL="${cfg.siteUrl}/support"
+BUG_REPORT_URL="${cfg.siteUrl}/bugs"
+VERSION_CODENAME=${cfg.osCodename.toLowerCase()}
+UBUNTU_CODENAME=${cfg.osCodename.toLowerCase()}
 `;
+    };
 
-    const HOSTNAME_FILE = `synth-district\n`;
+    const HOSTNAME_FILE = () => `${SD.config.kernelName}\n`;
 
-    const PASSWD_FILE = `root:x:0:0:root:/root:/bin/bash
+    const PASSWD_FILE = () => `root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 bin:x:2:2:bin:/bin:/usr/sbin/nologin
 sys:x:3:3:sys:/dev:/usr/sbin/nologin
@@ -173,7 +176,7 @@ proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
 www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
 backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
 list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
-irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+irc:x:39:39:ircd:/usr/run/ircd:/usr/sbin/nologin
 gnats:x:41:41:Gnats Bug-Reporting System:/var/lib/gnats:/usr/sbin/nologin
 nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
 systemd-network:x:100:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
@@ -182,7 +185,7 @@ syslog:x:102:106::/home/syslog:/usr/sbin/nologin
 messagebus:x:103:107::/nonexistent:/usr/sbin/nologin
 _apt:x:104:65534::/nonexistent:/usr/sbin/nologin
 sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
-user:x:1000:1000:Synth District User,,,:/home/user:/bin/bash
+user:x:1000:1000:${SD.config.defaultUserFullName},,,:/home/user:/bin/bash
 `;
 
     const SHADOW_FILE = `root:*:19800:0:99999:7:::
@@ -211,12 +214,14 @@ ff02::2         ip6-allrouters
 192.168.1.20    pihole.local
 `;
 
-    const SYNTH_CONFIG = `# Synth District Configuration
-# /etc/synth-district/config
+    const SYNTH_CONFIG = () => {
+        const cfg = SD.config;
+        return `# ${cfg.siteName} Configuration
+# /etc/${cfg.kernelName}/config
 
 [system]
-hostname = synth-district
-domain = synthdistrict.dev
+hostname = ${cfg.kernelName}
+domain = ${cfg.siteUrl.replace('https://', '')}
 timezone = UTC
 locale = en_US.UTF-8
 
@@ -227,7 +232,7 @@ dns_primary = 1.1.1.1
 dns_secondary = 8.8.8.8
 
 [security]
-# Note: actual secrets are in /etc/synth-district/.secrets (read-restricted)
+# Note: actual secrets are in /etc/${cfg.kernelName}/.secrets (read-restricted)
 # There is another flag hidden somewhere on this system.
 # Try: find / -name "*.key" 2>/dev/null
 allow_root_login = no
@@ -238,6 +243,7 @@ fail2ban_enabled = yes
 # Flag part 2: _4nd_3xpl0r3r}
 # Combine with the flag in ~/.secret to get the full picture.
 `;
+    };
 
     const PROC_VERSION = `Linux version 6.6.0-synth-district (gcc (Ubuntu 12.3.0-1ubuntu1) 12.3.0, GNU ld (GNU Binutils for Ubuntu) 2.40) #1 SMP PREEMPT_DYNAMIC Mon Jan 15 08:00:00 UTC 2024\n`;
 
@@ -437,9 +443,9 @@ No music files here yet. But the terminal plays a different kind of music.
 archive.tar.gz - Downloaded 2024-01-10 (source code, probably)
 `;
 
-    const GITCONFIG = `[user]
-	name = Synth District User
-	email = user@synthdistrict.dev
+    const GITCONFIG = () => `[user]
+	name = ${SD.config.defaultUserFullName}
+	email = ${SD.config.defaultEmail}
 [core]
 	editor = nano
 	autocrlf = input
@@ -501,9 +507,9 @@ QyNTUxOQAAACB... [REDACTED FOR SECURITY] ...
 -----END OPENSSH PRIVATE KEY-----
 `;
 
-    const ISSUE_FILE = `Synth District Linux 1.0 \\n \\l\n`;
+    const ISSUE_FILE = () => `${SD.config.getOsPrettyName()} \\n \\l\n`;
 
-    const ISSUE_NET_FILE = `Synth District Linux 1.0\nKernel \\r on an \\m (\\l)\n`;
+    const ISSUE_NET_FILE = () => `${SD.config.getOsPrettyName()}\nKernel \\r on an \\m (\\l)\n`;
 
     const GROUP_FILE = `root:x:0:
 daemon:x:1:
@@ -615,11 +621,14 @@ Pin-Priority: -10
 # See sources.list(5) for details.
 `;
 
-    const LSB_RELEASE = `DISTRIB_ID=Synth
-DISTRIB_RELEASE=1.0
-DISTRIB_CODENAME=neon
-DISTRIB_DESCRIPTION="Synth District Linux 1.0 (Neon)"
+    const LSB_RELEASE = () => {
+        const cfg = SD.config;
+        return `DISTRIB_ID=Synth
+DISTRIB_RELEASE=${cfg.osVersion}
+DISTRIB_CODENAME=${cfg.osCodename.toLowerCase()}
+DISTRIB_DESCRIPTION="${cfg.getOsPrettyName()}"
 `;
+    };
 
     const NSSWITCH_CONF = `# /etc/nsswitch.conf
 passwd:         files systemd
@@ -843,7 +852,7 @@ Host *
                 }),
                 'default': dir({
                     'locale': file(DEFAULT_LOCALE),
-                    'grub': file(`GRUB_DEFAULT=0\nGRUB_TIMEOUT=5\nGRUB_DISTRIBUTOR="Synth District"\n`),
+                    'grub': file(() => `GRUB_DEFAULT=0\nGRUB_TIMEOUT=5\nGRUB_DISTRIBUTOR="${SD.config.siteName}"\n`),
                     'keyboard': file(`# Consoles\nFORMAT="us"\n`),
                     'console-setup': file(`FONTFACE="Fixed"\nFONTSIZE="8x16"\n`),
                     'locale': file(DEFAULT_LOCALE),
@@ -896,7 +905,7 @@ Host *
                     'Documents': dir({
                         'notes.txt': userFile(NOTES_TXT),
                         'todo.md': userFile(TODO_MD),
-                        'readme.txt': userFile(`Welcome to Synth District Linux.
+                        'readme.txt': userFile(() => `Welcome to ${SD.config.osName}.
 
 This is your home directory. Feel free to explore.
 The system is yours to command.
@@ -924,7 +933,7 @@ Happy hacking.
                     }, 'drwxr-xr-x', 'user'),
                     '.config': dir({
                         'git': dir({
-                            'config': userFile(`[user]\n\tname = Synth District User\n\temail = user@synthdistrict.dev\n`),
+                            'config': userFile(() => `[user]\n\tname = ${SD.config.defaultUserFullName}\n\temail = ${SD.config.defaultEmail}\n`),
                         }, 'drwxr-xr-x', 'user'),
                         'nano': dir({
                             'nanorc': userFile(`set linenumbers\nset autoindent\n`),
@@ -1231,7 +1240,7 @@ Happy hacking.
                 'initrd.img': file('[initrd image]'),
                 'initrd.img-6.6.0-synth-district': file('[initrd image]'),
                 'grub': dir({
-                    'grub.cfg': file(`# GRUB configuration\nset default=0\nset timeout=5\n\nmenuentry "Synth District Linux" {\n    linux /vmlinuz root=/dev/sda1 ro quiet\n    initrd /initrd.img\n}\n`),
+                    'grub.cfg': file(() => `# GRUB configuration\nset default=0\nset timeout=5\n\nmenuentry "${SD.config.osName}" {\n    linux /vmlinuz root=/dev/sda1 ro quiet\n    initrd /initrd.img\n}\n`),
                     'fonts': dir({}),
                     'locale': dir({}),
                     'i386-pc': dir({}),

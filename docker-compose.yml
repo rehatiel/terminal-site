@@ -6,3 +6,26 @@ services:
     ports:
       - "8080:80"
     container_name: synth-district-terminal
+    environment:
+      # Branding
+      SITE_NAME: Synth District
+      SITE_URL: https://synthdistrict.dev
+
+      # OS Identity
+      OS_NAME: Synth District Linux
+      OS_VERSION: "1.0"
+      OS_CODENAME: Neon
+      KERNEL_NAME: synth-district
+
+      # System Details
+      CITY_NAME: Synth City
+      REGION_NAME: Neon State
+      COMPANY_NAME: Synth Systems Inc.
+
+      # User Defaults
+      DEFAULT_USERNAME: user
+      DEFAULT_USER_FULLNAME: Synth District User
+      DEFAULT_EMAIL: user@synthdistrict.dev
+
+    # For custom logo (ASCII art on login screen), edit js/config.js directly
+    # Logo is too complex for environment variables (contains newlines and HTML)

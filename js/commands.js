@@ -1431,7 +1431,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
             'ifconfig.me': () => '203.0.113.42',
             'icanhazip.com': () => '203.0.113.42',
             'api.ipify.org': () => '203.0.113.42',
-            'ipinfo.io': () => '{\n  "ip": "203.0.113.42",\n  "city": "Synth City",\n  "region": "Neon State",\n  "country": "US",\n  "org": "AS64496 Synth District Networks"\n}',
+            'ipinfo.io': () => `{\n  "ip": "203.0.113.42",\n  "city": "${SD.config.cityName}",\n  "region": "${SD.config.regionName}",\n  "country": "US",\n  "org": "AS64496 ${SD.config.siteName} Networks"\n}`,
             'wttr.in': () => WEATHER_ASCII,
         };
 
@@ -1714,7 +1714,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         ctx.term.println(c('logout', 'ansi-dim'));
         await delay(500, ctx.signal);
         ctx.term.println('');
-        ctx.term.println(cRaw('<span class="ansi-fg-green ansi-bold">Synth District Linux 1.0</span> — Session terminated.'));
+        ctx.term.println(cRaw(`<span class="ansi-fg-green ansi-bold">${SD.config.getOsPrettyName()}</span> — Session terminated.`));
         ctx.term.println(c('Type any key to continue...', 'ansi-dim'));
         await new Promise(resolve => {
             const handler = () => { resolve(); document.removeEventListener('keydown', handler); };
@@ -2802,7 +2802,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
             ['System Ops',  'sudo, su, shutdown, reboot, exit, logout'],
             ['Synth',       'synth, toggle-crt'],
         ];
-        ctx.term.println(cRaw(`<span class="ansi-fg-bright-white ansi-bold">Synth District Linux — Available Commands</span>`));
+        ctx.term.println(cRaw(`<span class="ansi-fg-bright-white ansi-bold">${SD.config.osName} — Available Commands</span>`));
         ctx.term.println('');
         helps.forEach(([cat, cmds]) => {
             ctx.term.println(cRaw(`  <span class="ansi-fg-yellow ansi-bold">${esc(cat.padEnd(12))}</span>  <span class="ansi-fg-white">${esc(cmds)}</span>`));

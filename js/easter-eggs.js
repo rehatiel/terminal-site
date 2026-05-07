@@ -804,8 +804,8 @@ window.SynthDistrict = window.SynthDistrict || {};
             `[${(base+0.000002).toFixed(6)}] #PF: supervisor read access in kernel mode`,
             `[${(base+0.000003).toFixed(6)}] #PF: error_code(0x0000) - not-present page`,
             `[${(base+0.000004).toFixed(6)}] Oops: 0000 [#1] PREEMPT SMP NOPTI`,
-            `[${(base+0.000005).toFixed(6)}] CPU: 0 PID: 1 Comm: init Not tainted 6.6.0-synth-district #1`,
-            `[${(base+0.000006).toFixed(6)}] Hardware name: Synth Systems Inc. Synth District, BIOS 2.3.1 01/15/2024`,
+            `[${(base+0.000005).toFixed(6)}] CPU: 0 PID: 1 Comm: init Not tainted ${SD.config.getKernelVersion()} #1`,
+            `[${(base+0.000006).toFixed(6)}] Hardware name: ${SD.config.companyName} ${SD.config.siteName}, BIOS 2.3.1 01/15/2024`,
             `[${(base+0.000007).toFixed(6)}] RIP: 0010:vfs_unlink+0x0/0x120`,
             `[${(base+0.000008).toFixed(6)}] Code: 00 00 48 8b 07 48 85 c0 74 2a 48 8b 40 28 48 85 c0 74 21 4c 8b 00 45`,
             `[${(base+0.000009).toFixed(6)}] RSP: 0018:ffffc90000013e48 EFLAGS: 00010246`,
@@ -859,8 +859,8 @@ window.SynthDistrict = window.SynthDistrict || {};
             const panicText = [
                 'Kernel panic — not syncing: Attempted to kill init! exitcode=0x0000000b',
                 '',
-                'CPU: 0 PID: 1 Comm: init Not tainted 6.6.0-synth-district #1',
-                'Hardware name: Synth Systems Inc. Synth District, BIOS 2.3.1 01/15/2024',
+                `CPU: 0 PID: 1 Comm: init Not tainted ${SD.config.getKernelVersion()} #1`,
+                `Hardware name: ${SD.config.companyName} ${SD.config.siteName}, BIOS 2.3.1 01/15/2024`,
                 '',
                 '---[ end Kernel panic - not syncing: Attempted to kill init! ]---',
                 '',
@@ -910,8 +910,8 @@ window.SynthDistrict = window.SynthDistrict || {};
             ' ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝   ╚═╝  ',
         ];
         const info = [
-            ['OS',       'Synth District Linux 1.0 (Neon) x86_64'],
-            ['Kernel',   '6.6.0-synth-district'],
+            ['OS',       `${SD.config.getOsPrettyName()} x86_64`],
+            ['Kernel',   SD.config.getKernelVersion()],
             ['Shell',    'bash 5.2.15'],
             ['Terminal', 'xterm-256color'],
             ['CPU',      'Intel Core i7-13700K (16) @ 3.400GHz'],
@@ -965,7 +965,7 @@ window.SynthDistrict = window.SynthDistrict || {};
             "UNIX is basically a simple operating system, but you have to be a genius to understand the simplicity. — Dennis Ritchie",
             "C makes it easy to shoot yourself in the foot; C++ makes it harder, but when you do it blows your whole leg off. — Bjarne Stroustrup",
             "Every great developer you know got there by solving problems they were unqualified to solve until they did it.",
-            "Synth District: where the neons never dim and the terminals never close.",
+            `${SD.config.siteName}: where the neons never dim and the terminals never close.`,
             "The terminal is not a place. It's a state of mind.",
             "Whoever said 'no question is a stupid question' never watched someone type 'google.com' into the address bar of Google Chrome.",
             "chmod 777 is almost never the answer.",
@@ -1087,7 +1087,7 @@ window.SynthDistrict = window.SynthDistrict || {};
                     procRows +
                     `</div>` +
                     `<div style="position:absolute;bottom:0;left:0;right:0;padding:2px 8px;background:#373b41;font-size:12px;white-space:pre;">` +
-                    `Press <span class="ansi-fg-yellow ansi-bold">q</span> to quit | <span class="ansi-fg-yellow">k</span> kill | <span class="ansi-fg-yellow">1</span> CPU cores | <span class="ansi-fg-yellow">m</span> mem | <span class="ansi-dim">top - Synth District Linux</span>` +
+                    `Press <span class="ansi-fg-yellow ansi-bold">q</span> to quit | <span class="ansi-fg-yellow">k</span> kill | <span class="ansi-fg-yellow">1</span> CPU cores | <span class="ansi-fg-yellow">m</span> mem | <span class="ansi-dim">top - ${SD.config.osName}</span>` +
                     `</div>`;
             }
 
@@ -1594,7 +1594,7 @@ window.SynthDistrict = window.SynthDistrict || {};
         // BIOS POST screen
         const bios = document.createElement('div');
         bios.id = 'bios-overlay';
-        bios.innerHTML = esc(`Synth District UEFI BIOS v2.3.1  Copyright (C) 2024 Synth Systems Inc.
+        bios.innerHTML = esc(`${SD.config.siteName} UEFI BIOS v2.3.1  Copyright (C) 2024 ${SD.config.companyName}.
 
 CPU: Intel(R) Core(TM) i7-13700K @ 3.40GHz
 Memory Test: ████████████████████████████████ 32768MB OK
@@ -1713,15 +1713,15 @@ Loading kernel: vmlinuz-6.6.0-synth-district...`);
             if (args[1] === 'c0ns0le_c0wboy_f0und_th3_s3cr3t') {
                 ctx.term.println(c('🎉 Flag accepted! You are a true Console Cowboy.', 'ansi-fg-green ansi-bold'));
                 ctx.term.println('');
-                ctx.term.println(c('Welcome to the inner circle of Synth District.', 'ansi-fg-cyan'));
-                ctx.term.println(c('There is more to explore. Check /etc/synth-district/config.', 'ansi-dim'));
+                ctx.term.println(c(`Welcome to the inner circle of ${SD.config.siteName}.`, 'ansi-fg-cyan'));
+                ctx.term.println(c(`There is more to explore. Check /etc/${SD.config.kernelName}/config.`, 'ansi-dim'));
             } else {
                 ctx.term.println(c('synth: invalid flag', 'ansi-fg-red'));
             }
             return { exitCode: 0 };
         }
         if (args[0] === '--help' || args[0] === '-h') {
-            ctx.term.println(c('synth — Synth District system utility', 'ansi-fg-cyan ansi-bold'));
+            ctx.term.println(c(`synth — ${SD.config.siteName} system utility`, 'ansi-fg-cyan ansi-bold'));
             ctx.term.println(c('  synth --flag <FLAG>    Submit a found flag', 'ansi-fg-white'));
             ctx.term.println(c('  synth --lore           System lore', 'ansi-fg-white'));
             ctx.term.println(c('  synth --about          About this system', 'ansi-fg-white'));
@@ -1736,7 +1736,7 @@ Loading kernel: vmlinuz-6.6.0-synth-district...`);
                 c('  went dark. When the clouds turned to ash and the SaaS empires', 'ansi-fg-white'),
                 c('  crumbled, one terminal remained lit.', 'ansi-fg-white'),
                 '',
-                c('  In Synth District, the terminal is law. The command line is', 'ansi-fg-cyan'),
+                c(`  In ${SD.config.siteName}, the terminal is law. The command line is`, 'ansi-fg-cyan'),
                 c('  the only interface that matters. Graphical UIs are myths told', 'ansi-fg-cyan'),
                 c('  to frighten children.', 'ansi-fg-cyan'),
                 '',
@@ -1749,7 +1749,7 @@ Loading kernel: vmlinuz-6.6.0-synth-district...`);
             return { exitCode: 0 };
         }
         if (args[0] === '--about') {
-            ctx.term.println(c('Synth District Linux 1.0 (Neon)', 'ansi-fg-cyan ansi-bold'));
+            ctx.term.println(c(SD.config.getOsPrettyName(), 'ansi-fg-cyan ansi-bold'));
             ctx.term.println(c('A terminal experience for those who prefer the command line.', 'ansi-fg-white'));
             ctx.term.println(c('Built with vanilla JS. No frameworks. No mercy.', 'ansi-dim'));
             return { exitCode: 0 };

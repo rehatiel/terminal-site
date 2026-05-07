@@ -32,6 +32,30 @@ docker-compose up
 
 That's it! Docker handles all the setup and serving.
 
+## Customization
+
+Edit `docker-compose.yml` to customize branding, OS identity, and system details:
+
+```yaml
+environment:
+  SITE_NAME: My District
+  SITE_URL: https://mysite.com
+  OS_NAME: My Linux
+  OS_CODENAME: Aurora
+  KERNEL_NAME: my-kernel
+  COMPANY_NAME: My Company
+  # ... etc
+```
+
+Then run:
+```bash
+docker-compose up
+```
+
+**Customizing the logo**: The ASCII art logo shown on login can be customized by editing `js/config.js` and modifying the `logo` field in the config. It supports HTML with color spans.
+
+For other non-Docker usage, edit `js/config.js` directly.
+
 ## Usage
 
 Once in the terminal, try some commands:

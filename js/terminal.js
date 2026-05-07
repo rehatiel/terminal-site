@@ -16,23 +16,13 @@ window.SynthDistrict = window.SynthDistrict || {};
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    const MOTD = `
-<span class="ansi-fg-cyan ansi-bold"> ███████╗██╗   ██╗███╗   ██╗████████╗██╗  ██╗</span>
-<span class="ansi-fg-cyan ansi-bold"> ██╔════╝╚██╗ ██╔╝████╗  ██║╚══██╔══╝██║  ██║</span>
-<span class="ansi-fg-cyan ansi-bold"> ███████╗ ╚████╔╝ ██╔██╗ ██║   ██║   ███████║</span>
-<span class="ansi-fg-blue ansi-bold"> ╚════██║  ╚██╔╝  ██║╚██╗██║   ██║   ██╔══██║</span>
-<span class="ansi-fg-blue ansi-bold"> ███████║   ██║   ██║ ╚████║   ██║   ██║  ██║</span>
-<span class="ansi-fg-blue ansi-bold"> ╚══════╝   ╚═╝   ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝</span>
-<span class="ansi-fg-magenta ansi-bold"> ██████╗ ██╗███████╗████████╗██████╗ ██╗ ██████╗████████╗</span>
-<span class="ansi-fg-magenta ansi-bold"> ██╔══██╗██║██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝╚══██╔══╝</span>
-<span class="ansi-fg-magenta ansi-bold"> ██║  ██║██║███████╗   ██║   ██████╔╝██║██║        ██║   </span>
-<span class="ansi-fg-bright-magenta ansi-bold"> ██║  ██║██║╚════██║   ██║   ██╔══██╗██║██║        ██║   </span>
-<span class="ansi-fg-bright-magenta ansi-bold"> ██████╔╝██║███████║   ██║   ██║  ██║██║╚██████╗   ██║   </span>
-<span class="ansi-fg-bright-magenta ansi-bold"> ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝   ╚═╝  </span>`;
+    const getMOTD = () => SD.config.logo;
 
-    const BOOT_LINES = [
-        [0,   '[    0.000000] Booting Linux kernel 6.6.0-synth-district #1 SMP PREEMPT_DYNAMIC'],
-        [60,  '[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.6.0-synth-district root=/dev/sda1 ro quiet'],
+    const getBootLines = () => {
+        const kernelVer = SD.config.getKernelVersion();
+        return [
+        [0,   `[    0.000000] Booting Linux kernel ${kernelVer} #1 SMP PREEMPT_DYNAMIC`],
+        [60,  `[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-${kernelVer} root=/dev/sda1 ro quiet`],
         [80,  '[    0.128432] ACPI: IRQ0 used by override.'],
         [60,  '[    0.183421] ACPI: IRQ2 used by override.'],
         [80,  '[    0.312837] PCI: Using configuration type 1 for base access'],
@@ -47,16 +37,17 @@ window.SynthDistrict = window.SynthDistrict || {};
         [100, '[    4.001234] EXT4-fs (sda1): mounted filesystem with ordered data mode'],
         [150, '[    4.441293] systemd[1]: systemd 252 running in system mode (+PAM +AUDIT)'],
         [200, '[    4.892341] systemd[1]: Detected architecture x86-64.'],
-        [100, '[    5.123456] systemd[1]: Hostname set to <synth-district>.'],
+        [100, `[    5.123456] systemd[1]: Hostname set to <${SD.config.kernelName}>.`],
         [300, '[    6.234567] Started Network Time Synchronization.'],
         [200, '[    7.345678] Started OpenSSH Server Daemon.'],
         [150, '[    7.891234] Started nginx.service.'],
         [200, '[    8.123456] Reached target Multi-User System.'],
         [300, '[    8.441293] Reached target Graphical Interface.'],
         [200, ''],
-        [100, 'Synth District Linux 1.0 synth-district tty1'],
-        [300, 'synth-district login: '],
+        [100, `${SD.config.getOsPrettyName()} ${SD.config.kernelName} tty1`],
+        [300, `${SD.config.kernelName} login: `],
     ];
+    };
 
     class Terminal {
         constructor() {
@@ -527,7 +518,7 @@ window.SynthDistrict = window.SynthDistrict || {};
             this.$inputLine.style.visibility = 'hidden';
             this.isBlocked = true;
 
-            for (const [ms, text] of BOOT_LINES) {
+            for (const [ms, text] of getBootLines()) {
                 await delay(ms);
                 if (text === '') { this.println(''); continue; }
                 this.println(c(text, 'ansi-fg-bright-black'));
@@ -558,16 +549,16 @@ window.SynthDistrict = window.SynthDistrict || {};
 
         async showMOTD() {
             // ASCII banner
-            MOTD.split('\n').forEach(line => this.println(line));
+            getMOTD().split('\n').forEach(line => this.println(line));
             this.println('');
 
             const now = new Date();
             this.println(`Last login: ${now.toDateString()} ${now.toTimeString().slice(0,8)} from 10.0.0.5 on pts/0`);
             this.println('');
-            this.println(c('Welcome to Synth District Linux 1.0 (Neon)', 'ansi-fg-green ansi-bold'));
+            this.println(c(`Welcome to ${SD.config.getOsPrettyName()}`, 'ansi-fg-green ansi-bold'));
             this.println('');
-            this.println(c('  * Documentation:  https://synthdistrict.dev/docs', 'ansi-fg-white'));
-            this.println(c('  * Support:        https://synthdistrict.dev/support', 'ansi-fg-white'));
+            this.println(c(`  * Documentation:  ${SD.config.siteUrl}/docs`, 'ansi-fg-white'));
+            this.println(c(`  * Support:        ${SD.config.siteUrl}/support`, 'ansi-fg-white'));
             this.println('');
             this.println(esc(`System information as of ${now.toDateString()}`));
             this.println('');
