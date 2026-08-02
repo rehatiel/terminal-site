@@ -1,6 +1,25 @@
 # Synth District Terminal
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
+![JavaScript](https://img.shields.io/badge/javascript-vanilla-yellow.svg)
+![Docker](https://img.shields.io/badge/docker-ready-2496ED.svg?logo=docker&logoColor=white)
+
 A static, zero-dependency Linux terminal emulator for the Synth District. Pure vanilla HTML/CSS/JavaScript — no build step, no package manager, no framework. Run with Docker for the best experience.
+
+## Screenshots
+
+| Boot & login | `ls -la` |
+|---|---|
+| ![Boot sequence and login banner](docs/screenshots/01-boot-login.png) | ![Colorized directory listing](docs/screenshots/02-ls.png) |
+
+| `neofetch` | `top` |
+|---|---|
+| ![neofetch system info display](docs/screenshots/03-neofetch.png) | ![top process monitor](docs/screenshots/04-top.png) |
+
+| `matrix` easter egg | `vim` editor |
+|---|---|
+| ![Matrix rain effect](docs/screenshots/05-matrix.png) | ![vim editing a file](docs/screenshots/06-vim.png) |
 
 ## Features
 
